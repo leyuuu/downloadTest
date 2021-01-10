@@ -1,0 +1,25 @@
+name: Download Process
+on:
+  gollum
+jobs:
+  downloading:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.1.0
+    - name: Rclone Install
+      run: curl https://rclone.org/install.sh | sudo bash
+    - name: Download and Upload
+      run: |
+        mkdir download
+        git clone "https://github.com/${GITHUB_REPOSITORY}.wiki.git"
+        wiki=`echo $echo $GITHUB_REPOSITORY | cut -d "/" -f 2`.wiki
+        cd "$wiki"
+        driver=`git log --pretty=format: -1 --name-only *.md`
+        export driver
+        cd ..
+        wget `cat $wiki/$driver | xargs` --directory-prefix=download
+        pip install -r requirements.txt
+        python upload.py
+      env: 
+        rclone_conf: ${{ secrets.rclone_conf }}
+
