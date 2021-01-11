@@ -24,7 +24,8 @@ jobs:
       run: |
         mkdir downloads
         git clone "https://github.com/${GITHUB_REPOSITORY}.wiki.git"
-        cd `echo $GITHUB_REPOSITORY | cut -d "/" -f 2`.wiki
+        wiki=`echo $GITHUB_REPOSITORY | cut -d "/" -f 2`.wiki
+        cd $wiki
         mdfile=`git log --pretty=format: -1 --name-only *.md`
         dest=${mdfile:0:-3}
         cd ..
